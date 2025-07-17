@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-def backward_euler(f, x0, y0, xn, n):
+def runge_kutta_fourth_order(f, x0, y0, xn, n):
     x = x0
     y = y0
     h = (xn - x0) / n
@@ -9,8 +9,11 @@ def backward_euler(f, x0, y0, xn, n):
     y_values = [y0]
 
     for i in range(n):
-        y1 = y + h * (f(x, y))
-        y = y + h * (f(x + h, y1))
+        k1 = h * f(x, y)
+        k2 = h * f(x + h/2, y + k1/2)
+        k3 = h * f(x + h/2, y + k2/2)
+        k4 = h * f(x + h, y + k3)
+        y = y + (k1 + 2*k2 + 2*k3 + k4) / 6
         x = x + h
         x_values.append(x)
         y_values.append(y)
@@ -19,13 +22,13 @@ def backward_euler(f, x0, y0, xn, n):
 
 def plot_results(x_values, y_values):
     plt.plot(x_values, y_values, marker='o', linewidth=2)
-    plt.title('Backward Euler Method Results')
+    plt.title('Runge-Kutta Fourth Order Method Results')
     plt.xlabel('x')
     plt.ylabel('y')
     plt.grid()
     plt.show()
 
-x_results, y_results = backward_euler(lambda x, y: (y**2 - x**2) / (y**2 + x**2), 0, 1, 1, 20)
+x_results, y_results = runge_kutta_fourth_order(lambda x, y: (y**2 - x**2) / (y**2 + x**2), 0, 1, 1, 20)
 
 plot_results(x_results, y_results)
 for x, y in zip(x_results, y_results):
